@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ClimaAhorro QRoo</title>
@@ -463,6 +464,56 @@ fillSel();buildAps();casa();buildSimAps();lang();onb(!S.done);if(S.done)applyAc(
 if(W){$('tc').value=W.t;$('hr').value=W.h;wshow('Último dato guardado ('+W.c+').')}
 getW();
 render();hoy();sim();
+</script>
+<script>
+  // 1. Configura tus credenciales de Supabase
+  const SUPABASE_URL = 'https://rxgftthqewamezvikjzd.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_ieQeLrLuKs6Xc7VgltfXYA_E5TK4upD';
+
+  // Inicializar el cliente
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // 2. Ejemplo de función para LEER datos de una tabla (por ejemplo, 'lecturas')
+  async function cargarDatosDesdeSupabase() {
+    try {
+      const { data, error } = await supabaseClient
+        .from('lecturas') // Cambia 'lecturas' por el nombre de tu tabla
+        .select('*');
+
+      if (error) {
+        console.error('Error al obtener datos:', error.message);
+        return;
+      }
+
+      console.log('Datos cargados de Supabase:', data);
+      // Aquí puedes actualizar las variables de tu app con estos datos
+    } catch (err) {
+      console.error('Error de conexión:', err);
+    }
+  }
+
+  // 3. Ejemplo de función para GUARDAR una lectura en Supabase
+  async function guardarLecturaEnSupabase(kwhValor, fechaValor) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('lecturas')
+        .insert([
+          { kwh: kwhValor, fecha: fechaValor }
+        ]);
+
+      if (error) {
+        console.error('Error al guardar:', error.message);
+        return;
+      }
+
+      console.log('Guardado exitoso:', data);
+    } catch (err) {
+      console.error('Error de conexión:', err);
+    }
+  }
+
+  // Puedes llamar a esta función cuando cargue la página si lo deseas
+  // window.addEventListener('DOMContentLoaded', cargarDatosDesdeSupabase);
 </script>
 </body>
 </html>
