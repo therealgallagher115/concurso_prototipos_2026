@@ -353,11 +353,11 @@ function renderH(){$('hlist').innerHTML=HM.map((o,i)=>`<div class="hrow"><input 
 function readH(){document.querySelectorAll('#hlist input').forEach(i=>{const o=HM[+i.dataset.i];if(o)o.n=i.value.trim()||'Vivienda '+(+i.dataset.i+1)});save();refreshHdr()}
 function reUI(){Object.keys(DEF).forEach(k=>$(k).value=T[k]);$('sea').value=T.sea||'f';$('tarsel').value=T.tar||'';$('goal').value=S.goal??10;buildAps();casa();buildSimAps();applyAc();render();sim();todo();meta();refreshHdr()}
 function swH(i){save();bindH(i);reUI();save()}
-const SB_URL='',SB_KEY='';/* El equipo pega aquí la URL y la clave pública (anon) de su proyecto de Supabase. Vacío = solo este dispositivo. */
+const SB_URL='https://rxgftthqewamezvikjzd.supabase.co',SB_KEY='sb_publishable_ieQeLrLuKs6Xc7VgltfXYA_E5TK4upD';/* El equipo pega aquí la URL y la clave pública (anon) de su proyecto de Supabase. Vacío = solo este dispositivo. */
 let SB=null,SU=null,SBT=null;
 function sbSt(m){if($('sbst'))$('sbst').textContent=m;if($('sbout'))$('sbout').hidden=!SU}
 function sbInit(){if(!SB_URL||!SB_KEY){sbSt('Tus datos se guardan solo en este dispositivo.');return}
-const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
+const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.79.0/dist/umd/supabase.js';
 s.onload=()=>{try{SB=window.supabase.createClient(SB_URL,SB_KEY);$('u_mail_w').hidden=false;const st=()=>sbSt(SU?'Sesión iniciada: tus datos se guardan en tu cuenta.':'Tus datos se guardan solo en este dispositivo. Inicia sesión con tu correo para guardarlos en tu cuenta.');
 SB.auth.getSession().then(r=>{SU=r.data.session?r.data.session.user:null;st();if(SU)sbPull()});SB.auth.onAuthStateChange((ev,ss)=>{const had=!!SU;SU=ss?ss.user:null;st();if(SU&&!had)sbPull()})}catch(e){sbSt('No se pudo conectar. Tus datos siguen en este dispositivo.')}};
 s.onerror=()=>sbSt('No se pudo conectar. Tus datos siguen en este dispositivo.');document.head.appendChild(s)}
