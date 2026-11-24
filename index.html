@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ClimaAhorro QRoo</title>
@@ -392,8 +391,8 @@ s.onload=()=>{try{SB=window.supabase.createClient(SB_URL,SB_KEY);$('u_mail_w').h
 SB.auth.getSession().then(r=>{SU=r.data.session?r.data.session.user:null;st();if(SU)sbPull()});SB.auth.onAuthStateChange((ev,ss)=>{const had=!!SU;SU=ss?ss.user:null;st();if(SU&&!had)sbPull()})}catch(e){sbSt('No se pudo conectar. Tus datos siguen en este dispositivo.')}};
 s.onerror=()=>sbSt('No se pudo conectar. Tus datos siguen en este dispositivo.');document.head.appendChild(s)}
 async function sbPull(){try{const r=await SB.from('usuarios').select('*').eq('user_id',SU.id).maybeSingle();if(r.error)throw r.error;const d=r.data;
-if(d&&d.datos&&d.datos.HM&&new Date(d.updated_at).getTime()>TS){U={...U,n:d.nombre||U.n,e:d.entidad||U.e,m:d.municipio||U.m,ok:true};HM=d.datos.HM;HM.forEach(o=>{o.T={...DEF,...o.T};o.ac=o.ac||{ton:1.5,inv:false};o.ap=o.ap||{};o.R=o.R||[]});HC=Math.min(d.datos.HC||0,HM.length-1);S={...S,...d.datos.S};bindH(HC);TS=new Date(d.updated_at).getTime();persistLocal();reUI();onb(!S.done);sbSt('Datos recuperados de tu cuenta.')}else sbPush(true)}catch(e){sbSt('No se pudo sincronizar. Tus datos siguen en este dispositivo.')}}
-function sbPush(f){if(!SB||!SU)return;clearTimeout(SBT);SBT=setTimeout(async()=>{try{const r=await SB.from('usuarios').upsert({user_id:SU.id,nombre:U.n,entidad:U.e,municipio:U.m,consentimiento:!!U.ok,datos:{HM,HC,S:{done:S.done,seen:S.seen,lang:S.lang,city:S.city}},updated_at:new Date().toISOString()});if(r.error)throw r.error;sbSt('Guardado en tu cuenta.')}catch(e){sbSt('No se pudo guardar en la nube; queda en este dispositivo.')}},f?0:1500)}const SF=['lb','li','pb','pi','pe','dac'];
+if(d&&d.datos&&d.datos.HM&&new Date(d.updated_at).getTime()>TS){U={...U,n:d.nombre||U.n,e:d.entidad||U.e,m:d.municipio||U.m,ok:true};HM=d.datos.HM;HM.forEach(o=>{o.T={...DEF,...o.T};o.ac=o.ac||{ton:1.5,inv:false};o.ap=o.ap||{};o.R=o.R||[]});HC=Math.min(d.datos.HC||0,HM.length-1);S={...S,...d.datos.S};bindH(HC);TS=new Date(d.updated_at).getTime();persistLocal();reUI();onb(!S.done);sbSt('Datos recuperados de tu cuenta.')}else sbPush(true)}catch(e){console.error('Supabase (leer):',e&&(e.code+' '+e.message)||e);sbSt('No se pudo sincronizar. Tus datos siguen en este dispositivo.')}}
+function sbPush(f){if(!SB||!SU)return;clearTimeout(SBT);SBT=setTimeout(async()=>{try{const r=await SB.from('usuarios').upsert({user_id:SU.id,nombre:U.n,entidad:U.e,municipio:U.m,consentimiento:!!U.ok,datos:{HM,HC,S:{done:S.done,seen:S.seen,lang:S.lang,city:S.city}},updated_at:new Date().toISOString()});if(r.error)throw r.error;sbSt('Guardado en tu cuenta.')}catch(e){console.error('Supabase (guardar):',e&&(e.code+' '+e.message)||e);sbSt('No se pudo guardar en la nube; queda en este dispositivo.')}},f?0:1500)}const SF=['lb','li','pb','pi','pe','dac'];
 function sv(f,v){R.push({f,v});$('v').value='';$('warn').hidden=true;PEND=null;save();render()}
 function wchk(f,v){const q=R.filter(r=>r.f<=f).sort((a,b)=>a.f.localeCompare(b.f)),p=q[q.length-1];if(!p)return '';
 if(v<p.v)return 'La lectura ('+v+') es menor que la anterior ('+p.v+'). El medidor solo acumula, así que podría haber un error al escribirla.';
@@ -464,7 +463,7 @@ function lang(){const m=S.lang=='maya';document.querySelectorAll('[data-t]').for
 document.querySelectorAll('[data-t]').forEach(e=>e.dataset.es=e.textContent);
 $('go1').onclick=()=>{$('u_n').value=U.n||'';$('u_e').value=U.e||'Quintana Roo';$('u_m').value=U.m||'';$('u_ok').checked=!!U.ok;goStep('stp')};
 $('gop').onclick=()=>{const n=$('u_n').value.trim(),e=$('u_e').value,m=$('u_m').value.trim();if(!n||!e||!m||!$('u_ok').checked){$('perr').hidden=false;return}$('perr').hidden=true;U={...U,n,e,m,ok:true};save();refreshHdr();
-const ml=$('u_mail').value.trim();if(SB&&!SU&&ml){SB.auth.signInWithOtp({email:ml,options:{emailRedirectTo:location.origin+location.pathname}}).then(r=>{$('perr2').textContent=r.error?'No se pudo enviar el correo. Puedes continuar; tus datos se guardan en este dispositivo.':'Te enviamos un enlace a tu correo. Ábrelo en este mismo dispositivo para guardar tus datos en tu cuenta. Mientras tanto puedes continuar.';$('perr2').hidden=false})}
+const ml=$('u_mail').value.trim();if(SB&&!SU&&ml){SB.auth.signInWithOtp({email:ml,options:{emailRedirectTo:location.origin+location.pathname}}).then(r=>{if(r.error)console.error('Supabase (correo):',r.error.message);$('perr2').textContent=r.error?'No se pudo enviar el correo. Puedes continuar; tus datos se guardan en este dispositivo.':'Te enviamos un enlace a tu correo. Ábrelo en este mismo dispositivo para guardar tus datos en tu cuenta. Mientras tanto puedes continuar.';$('perr2').hidden=false})}
 buildAps();goStep('st2')};
 $('bkp').onclick=()=>goStep('st1');$('bk2').onclick=()=>goStep('stp');
 $('wq').onclick=()=>{const g=$('wguide');g.hidden=!g.hidden;$('wq').setAttribute('aria-expanded',!g.hidden)};
@@ -497,55 +496,6 @@ if(W){$('tc').value=W.t;$('hr').value=W.h;wshow('Último dato guardado ('+W.c+')
 getW();
 render();hoy();sim();
 </script>
-<script>
-  // 1. Configura tus credenciales de Supabase
-  const SUPABASE_URL = 'https://rxgftthqewamezvikjzd.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_ieQeLrLuKs6Xc7VgltfXYA_E5TK4upD';
 
-  // Inicializar el cliente
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  // 2. Ejemplo de función para LEER datos de una tabla (por ejemplo, 'lecturas')
-  async function cargarDatosDesdeSupabase() {
-    try {
-      const { data, error } = await supabaseClient
-        .from('lecturas') // Cambia 'lecturas' por el nombre de tu tabla
-        .select('*');
-
-      if (error) {
-        console.error('Error al obtener datos:', error.message);
-        return;
-      }
-
-      console.log('Datos cargados de Supabase:', data);
-      // Aquí puedes actualizar las variables de tu app con estos datos
-    } catch (err) {
-      console.error('Error de conexión:', err);
-    }
-  }
-
-  // 3. Ejemplo de función para GUARDAR una lectura en Supabase
-  async function guardarLecturaEnSupabase(kwhValor, fechaValor) {
-    try {
-      const { data, error } = await supabaseClient
-        .from('lecturas')
-        .insert([
-          { kwh: kwhValor, fecha: fechaValor }
-        ]);
-
-      if (error) {
-        console.error('Error al guardar:', error.message);
-        return;
-      }
-
-      console.log('Guardado exitoso:', data);
-    } catch (err) {
-      console.error('Error de conexión:', err);
-    }
-  }
-
-  // Puedes llamar a esta función cuando cargue la página si lo deseas
-  // window.addEventListener('DOMContentLoaded', cargarDatosDesdeSupabase);
-</script>
 </body>
 </html>
