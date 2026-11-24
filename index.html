@@ -94,7 +94,7 @@ details>summary{cursor:pointer;font:700 1.05rem Figtree,sans-serif;color:var(--p
 <div class="card" id="guia" hidden style="margin-top:16px"><p class="mut" id="gpaso" style="margin:0;font-weight:700">Paso 6 de 6</p><h2 style="font-size:1.3rem">Guía rápida: qué hace cada cosa</h2><dl>
 <dt>Resumen</dt><dd>Tu casa en números, el recibo proyectado y en qué escalón de tarifa vas a terminar.</dd>
 <dt>Lecturas</dt><dd>Anota la fecha y los kWh que marca tu medidor y pulsa Guardar lectura. Entre más lecturas, mejor la predicción.</dd>
-<dt>Simulador</dt><dd>Mueve las barras del aire acondicionado (termostato, horas) y de los otros aparatos que marcaste para ver cuánto ahorrarías al mes y por recibo. Son estimaciones.</dd>
+<dt>Simulador</dt><dd>Mueve las barras del aire acondicionado (si lo marcaste) y de los demás aparatos que marcaste para ver cuánto ahorrarías al mes y por recibo. Son estimaciones.</dd>
 <dt>Hoy</dt><dd>Obtiene la temperatura de tu ciudad (o la capturas a mano), recomienda ventilador o clima y lista acciones de ahorro ordenadas por cuánto ahorran.</dd>
 <dt>¿Cómo voy?</dt><dd>Te dice con palabras si gastaste más o menos de lo esperado desde la lectura anterior. El detalle técnico queda al final, para el informe.</dd>
 <dt>Tarifa</dt><dd>Los límites y precios de tu recibo. Cámbialos por los tuyos.</dd>
@@ -133,7 +133,8 @@ details>summary{cursor:pointer;font:700 1.05rem Figtree,sans-serif;color:var(--p
 <li>Refrigerador: si la etiqueta da kWh al año, divide entre 8.76 para obtener los watts promedio.</li>
 <li>Focos: el empaque dice los watts (por ejemplo, 9 W).</li>
 <li>Si no lo encuentras, déjalo vacío. Lee la etiqueta con el aparato desconectado y sin abrirlo.</li></ol></div>
-<div class="scroll"><table><thead><tr><th>Aparato</th><th>Cantidad</th><th>Horas al día</th><th>Watts <button type="button" id="wq" class="act sec" style="padding:0 10px;min-height:32px;margin:0" aria-expanded="false" aria-controls="wguide" aria-label="¿Cómo encuentro los watts?">?</button></th></tr></thead><tbody id="aps"></tbody></table></div>
+<div class="alert" id="wexamples" hidden><b>Watts de ejemplo de cada aparato</b><p class="mut" style="margin:6px 0">Son valores típicos, solo para darte una idea. Si tu aparato tiene etiqueta, usa los watts de la etiqueta. Si dejas la casilla vacía, la página usa estos mismos valores.</p><div class="scroll"><table><thead><tr><th>Aparato</th><th>Watts de ejemplo</th></tr></thead><tbody id="wex-rows"></tbody></table></div></div>
+<div class="scroll"><table><thead><tr><th>Aparato</th><th>Cantidad</th><th>Horas al día</th><th>Watts <button type="button" id="wq" class="act sec" style="padding:0 10px;min-height:32px;margin:0" aria-expanded="false" aria-controls="wguide" aria-label="¿Cómo encuentro los watts?">?</button> <button type="button" id="wex" class="act sec" style="padding:0 12px;min-height:44px;margin:0;display:inline-flex;align-items:center;gap:6px" aria-expanded="false" aria-controls="wexamples" aria-label="Ver ejemplos de watts de cada aparato"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><rect x="11" y="10" width="2" height="7" fill="currentColor"/><circle cx="12" cy="7" r="1.3" fill="currentColor"/></svg>Ejemplos</button></th></tr></thead><tbody id="aps"></tbody></table></div>
 <label for="s_ton">Si tienes aire acondicionado, ¿de qué capacidad?</label>
 <select id="s_ton"><option value="1">1 tonelada</option><option value="1.5">1.5 toneladas</option><option value="2">2 toneladas</option></select>
 <label><input type="checkbox" id="s_inv"> Es inverter</label>
@@ -189,6 +190,8 @@ details>summary{cursor:pointer;font:700 1.05rem Figtree,sans-serif;color:var(--p
   <div class="two">
     <div class="card">
       <h2 style="font-size:1.2rem">Simulador “¿y si…?”</h2>
+      <p class="alert" id="sim-noac" hidden>No marcaste aire acondicionado en tu encuesta, por eso no aparece en el simulador. Si sí lo usas, márcalo en tus aparatos. <button type="button" class="act sec" id="sim-edit">Editar mis aparatos</button></p>
+      <div id="sim-ac">
       <label for="ton">Capacidad del equipo</label>
       <select id="ton"><option value="1">1 tonelada (12,000 BTU)</option><option value="1.5" selected>1.5 toneladas (18,000 BTU)</option><option value="2">2 toneladas (24,000 BTU)</option></select>
       <label><input type="checkbox" id="inv" style="width:auto"> Es inverter</label>
@@ -198,7 +201,8 @@ details>summary{cursor:pointer;font:700 1.05rem Figtree,sans-serif;color:var(--p
       <label for="red">Horas menos al día: <b id="redv">1</b></label><input type="range" id="red" min="0" max="8" value="1">
       <label for="pct">Ahorro por grado: <b id="pctv">5</b> %</label><input type="range" id="pct" min="3" max="8" value="5">
       <p class="mut">Rango de 3 a 8 % por grado: confirma la cifra en CONUEE o FIDE y cítala en el informe.</p>
-      <h3 style="margin-top:24px;font-size:1.15rem">Tus otros aparatos</h3><p class="mut">Mueve las barras para ver cuánto ahorrarías si los usas menos horas al día.</p><div id="sim-aps"></div>
+      </div>
+      <h3 id="sim-h3" style="margin-top:24px;font-size:1.15rem">Tus otros aparatos</h3><p class="mut">Mueve las barras para ver cuánto ahorrarías si los usas menos horas al día.</p><div id="sim-aps"></div>
     </div>
     <div class="card">
       <h3>Lo que ahorrarías</h3><p id="s-say" style="font-size:1.15rem;font-weight:600;margin:6px 0 12px"></p>
@@ -258,6 +262,31 @@ details>summary{cursor:pointer;font:700 1.05rem Figtree,sans-serif;color:var(--p
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // ⚠️ CAMBIA 'id-de-tu-boton' y 'id-de-tu-input' por los IDs reales de tu HTML
+    const botonGuardar = document.getElementById('Guardar Lectura'); 
+    const inputKwh = document.getElementById('add');
+
+    if (botonGuardar && inputKwh) {
+      botonGuardar.addEventListener('click', async (e) => {
+        e.preventDefault(); // Evita que la página se recargue si es un formulario
+
+        const valorKwh = inputKwh.value;
+        const fechaActual = new Date().toISOString().split('T')[0]; // Obtiene la fecha de hoy (YYYY-MM-DD)
+
+        if (!valorKwh || valorKwh.trim() === '') {
+          alert('Por favor, escribe un valor de kWh válido.');
+          return;
+        }
+
+        // Llamamos a la función que guarda los datos en Supabase
+        await guardarLecturaEnSupabase(parseFloat(valorKwh), fechaActual);
+
+        // Opcional: Limpiar el campo después de guardar
+        inputKwh.value = '';
+      });
+    }
+  });
 const $=id=>document.getElementById(id);
 const DEF={lb:300,li:750,pb:1.0,pi:1.3,pe:3.8,dias:60,dac:1000,k:3};
 let T={...DEF},R=[],S={done:false,seen:false,lang:'es',city:0,ap:{},ac:{ton:1.5,inv:false},goal:10},W=null,U={n:'',e:'',m:'',ok:false},HM=[],HC=0,TS=0;
@@ -307,7 +336,7 @@ sim();}
 
 function sim(){
 ['h','t0','t1','red','pct'].forEach(i=>$(i+'v').textContent=$(i).value);
-const qa=(S.ap.ac&&S.ap.ac.on)?S.ap.ac.q:1,kw=((S.ap.ac&&S.ap.ac.w>0)?S.ap.ac.w/1000:1.2*$('ton').value*($('inv').checked?.7:1))*qa,h=+$('h').value,red=Math.min(+$('red').value,h);
+const acOn=!!(S.ap.ac&&S.ap.ac.on);$('sim-ac').hidden=!acOn;$('sim-noac').hidden=acOn;$('sim-h3').textContent=acOn?'Tus otros aparatos':'Tus aparatos';const qa=acOn?S.ap.ac.q:1,kw=(acOn?1:0)*((S.ap.ac&&S.ap.ac.w>0)?S.ap.ac.w/1000:1.2*$('ton').value*($('inv').checked?.7:1))*qa,h=+$('h').value,red=Math.min(+$('red').value,h);
 const deg=Math.max(0,$('t1').value-$('t0').value),f=Math.min(.5,deg*$('pct').value/100);
 const base=kw*h*30,nuevo=kw*(h-red)*30*(1-f),ah=base-nuevo;
 let ahO=0,nowO=0,newO=0;const chg=[];AP.forEach(([k,n])=>{const p=S.ap[k];if(k=='ac'||!p||!p.on)return;const el=$('sa_'+k),hn=k=='ref'||!el?p.h:Math.min(+el.value,p.h),a0=p.q*wt(k)*p.h*30/1000,a1=p.q*wt(k)*hn*30/1000;if(el&&$('sav_'+k))$('sav_'+k).textContent=hn;nowO+=a0;newO+=a1;ahO+=a0-a1;if(a0-a1>.05)chg.push({n,a:a0,b:a1,dh:p.h-hn})});
@@ -316,14 +345,14 @@ $('s-kwh').textContent=kwh(aht);
 let proy=R.length>1?((R[R.length-1].v-R[0].v)/Math.max(1,(new Date(R[R.length-1].f)-new Date(R[0].f))/864e5))*T.dias:(est()?est()*T.dias/30:T.lb+T.li/2);
 const pesos=costo(proy)-costo(proy-aht*(T.dias/30));
 $('s-mxn').textContent=mxn(Math.max(0,pesos));
-$('s-note').textContent=`Aire acondicionado${qa>1?' ('+qa+' equipos)':''}: de ${kwh(base)} a ${kwh(nuevo)} al mes.${chg.length?' Otros aparatos: '+kwh(ahO)+' menos al mes.':''}`+(R.length>1?'':' Sin lecturas, se usa un consumo promedio de referencia.');
+$('s-note').textContent=((acOn?`Aire acondicionado${qa>1?' ('+qa+' equipos)':''}: de ${kwh(base)} a ${kwh(nuevo)} al mes.`:'')+(chg.length?(acOn?' Otros aparatos: ':'Aparatos: ')+kwh(ahO)+' menos al mes.':'')+(R.length>1?'':' Sin lecturas, se usa un consumo promedio de referencia.')).trim();
 const li=[];if(ah>.05)li.push('Aire acondicionado: de '+Math.round(base)+' a '+Math.round(nuevo)+' kWh al mes');chg.forEach(c=>li.push(c.n+': de '+Math.round(c.a)+' a '+Math.round(c.b)+' kWh al mes ('+(+c.dh.toFixed(1))+' h menos al día)'));
 $('ch-sim1').innerHTML='<p style="margin:16px 0 4px;font-weight:700">Lo que gastan al mes los aparatos que marcaste</p>'+hb([{n:'Ahora',v:base+nowO,c:'var(--acc)'},{n:'Con el cambio',v:nuevo+newO,c:'var(--ok)'}],'kWh')+(li.length?'<ul style="margin:8px 0;padding-left:20px">'+li.map(x=>'<li>'+x+'</li>').join('')+'</ul>':'');
-const ps=[];if(deg>0)ps.push('subes el termostato de '+$('t0').value+' a '+$('t1').value+' °C');if(red>0)ps.push('usas el clima '+red+' hora'+(red==1?'':'s')+' menos al día');
+const ps=[];if(acOn&&deg>0)ps.push('subes el termostato de '+$('t0').value+' a '+$('t1').value+' °C');if(acOn&&red>0)ps.push('usas el clima '+red+' hora'+(red==1?'':'s')+' menos al día');
 chg.forEach(c=>ps.push('reduces el uso de '+c.n[0].toLowerCase()+c.n.slice(1)+' en '+(+c.dh.toFixed(1))+' h al día'));
 $('s-say').textContent=ps.length?'Si '+(ps.length>1?ps.slice(0,-1).join(', ')+' y '+ps[ps.length-1]:ps[0])+', ahorrarías cerca de '+Math.round(aht)+' kWh al mes (unos '+mxn(Math.max(0,pesos))+' por recibo).':'Mueve las barras para ver cuánto ahorrarías.';
-const cur=[];for(let d=0;d<=8;d++)cur.push([d,base-kw*(h-red)*30*(1-Math.min(.5,d*$('pct').value/100))]);
-lines('ch-sim2','Cuánto ahorras según cuántos grados subes el termostato',[{n:'Ahorro al mes',c:'var(--ok)',pts:cur},{n:'Tu elección',c:'var(--pri)',pts:[[deg,ah]]}],'grados de aumento del termostato','kWh');}
+if(!acOn){$('ch-sim2').innerHTML=''}else{const cur=[];for(let d=0;d<=8;d++)cur.push([d,base-kw*(h-red)*30*(1-Math.min(.5,d*$('pct').value/100))]);
+lines('ch-sim2','Cuánto ahorras según cuántos grados subes el termostato',[{n:'Ahorro al mes',c:'var(--ok)',pts:cur},{n:'Tu elección',c:'var(--pri)',pts:[[deg,ah]]}],'grados de aumento del termostato','kWh');}}
 
 function hoy(){const t=+$('tc').value*9/5+32,r=+$('hr').value;
 let hi=-42.379+2.04901523*t+10.14333127*r-.22475541*t*r-.00683783*t*t-.05481717*r*r+.00122874*t*t*r+.00085282*t*r*r-.00000199*t*t*r*r;
@@ -387,7 +416,7 @@ function roi(){const c=+$('roi_c').value,k=+$('roi_k').value;if(!c||!k){$('roi_r
 const pm=pesM(k)/(T.dias/30);$('roi_r').textContent=pm>0?`Ahorrarías unos ${mxn(pm)} al mes. Se pagaría en cerca de ${Math.ceil(c/pm)} meses (${(c/pm/12).toFixed(1)} años).`:'Con tu tarifa actual el ahorro en pesos sería casi cero. Revisa los datos.'}
 const CW=600,CH=230,P={l:52,r:14,t:16,b:44};
 function buildSimAps(){const rs=AP.filter(a=>a[0]!='ac'&&S.ap[a[0]]&&S.ap[a[0]].on);
-$('sim-aps').innerHTML=rs.length?rs.map(([k,n])=>{const p=S.ap[k];return k=='ref'?`<p class="mut">${n}: siempre encendido, no se reduce.</p>`:`<label for="sa_${k}">${n}${p.q>1?' ('+p.q+')':''}: <b id="sav_${k}">${p.h}</b> h al día <span class="mut">(ahora ${p.h} h)</span></label><input type="range" id="sa_${k}" min="0" max="${Math.max(p.h,.5)}" step="${p.h<=2?.1:.5}" value="${p.h}">`}).join(''):'<p class="mut">No marcaste otros aparatos en la encuesta. Pulsa “Editar mis aparatos” en el Resumen para agregarlos.</p>';
+$('sim-aps').innerHTML=rs.length?rs.map(([k,n])=>{const p=S.ap[k];return k=='ref'?`<p class="mut">${n}: siempre encendido, no se reduce.</p>`:`<label for="sa_${k}">${n}${p.q>1?' ('+p.q+')':''}: <b id="sav_${k}">${p.h}</b> h al día <span class="mut">(ahora ${p.h} h)</span></label><input type="range" id="sa_${k}" min="0" max="${Math.max(p.h,.5)}" step="${p.h<=2?.1:.5}" value="${p.h}">`}).join(''):'<p class="mut">No marcaste '+(S.ap.ac&&S.ap.ac.on?'otros ':'')+'aparatos en la encuesta. Pulsa “Editar mis aparatos” para agregarlos.</p>';
 $('sim-aps').querySelectorAll('input').forEach(i=>i.oninput=sim)}
 function hb(it,u){const m=Math.max(1,...it.map(x=>x.v));return it.map(x=>`<div class="hb"><span>${x.n}</span><div><i style="width:${Math.max(3,x.v/m*100)}%;background:${x.c}"></i></div><b>${x.v<10?x.v.toFixed(1):Math.round(x.v)} ${u}</b></div>`).join('')}
 function frame(ym){let s='';for(let i=0;i<=4;i++){const v=ym*i/4,y=CH-P.b-(CH-P.t-P.b)*i/4;s+=`<line x1="${P.l}" x2="${CW-P.r}" y1="${y}" y2="${y}" stroke="var(--line)"/><text x="${P.l-6}" y="${y+4}" text-anchor="end" font-size="12" fill="var(--mut)">${v>=100?Math.round(v):+v.toFixed(1)}</text>`}return s}
@@ -439,6 +468,9 @@ const ml=$('u_mail').value.trim();if(SB&&!SU&&ml){SB.auth.signInWithOtp({email:m
 buildAps();goStep('st2')};
 $('bkp').onclick=()=>goStep('st1');$('bk2').onclick=()=>goStep('stp');
 $('wq').onclick=()=>{const g=$('wguide');g.hidden=!g.hidden;$('wq').setAttribute('aria-expanded',!g.hidden)};
+function buildWex(){const f=n=>n.toLocaleString('es-MX');const r=[];AP.forEach(([k,n,w])=>{if(k=='ac'){[1,1.5,2].forEach(t=>r.push([`Aire acondicionado de ${t} tonelada${t>1?'s':''}`,`${f(1200*t)} W (inverter: cerca de ${f(Math.round(1200*t*.7))} W)`]))}else if(k=='ref')r.push([n,`${f(w)} W en promedio (el motor se enciende y se apaga solo)`]);else r.push([n,`${f(w)} W`])});$('wex-rows').innerHTML=r.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('')}
+buildWex();$('wex').onclick=()=>{const g=$('wexamples');g.hidden=!g.hidden;$('wex').setAttribute('aria-expanded',!g.hidden);if(!g.hidden)g.scrollIntoView({block:'center'})};
+$('sim-edit').onclick=()=>{EDIT=true;buildAps();onb(true);goStep('st2')};
 $('t_tar').onchange=()=>{const v=$('t_tar').value;$('tnote').textContent=DACL[v]?'Para la tarifa '+v+' usaremos '+DACL[v]+' kWh al mes (promedio) como límite de alto consumo, según notas de prensa de CFE; confírmalo en tu recibo. Los precios y límites por bloque escríbelos en la pestaña Tarifa.':v=='DAC'?'Estás en la tarifa de alto consumo, sin subsidio. Escribe el precio de tu recibo en la pestaña Tarifa.':'Si no la sabes, puedes continuar y escribirla después en la pestaña Tarifa.'};
 $('gt').onclick=()=>{setTar($('t_tar').value);save();render();sim();todo();renderH();goStep('sth')};$('bkt').onclick=()=>goStep('st2');
 $('tarsel').onchange=()=>{setTar($('tarsel').value);save();render();sim();todo()};
